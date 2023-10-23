@@ -43,16 +43,46 @@
                 id="bruteForce"
                 class="px-4 py-2 bg-red-500 rounded hover:bg-red-400"
               >
-  
                 💀 BruteForce 💀
               </button>
             </div>
             <span id="result" class="text-green-500"></span>
           </div>
+        </div>
       </div>
     </main>
     <footer class="flex items-center justify-center flex-shrink-0 h-14">
       <p>Made with ❤️ and a lot of ☕️ by SwitzerChees</p>
     </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const loginButton = document.getElementById("login");
+
+        loginButton.addEventListener("click", async () => {
+          const username = document.getElementById("username").value;
+          const password = document.getElementById("password").value;
+
+          const response = await fetch("/api/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username, password }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            // Login erfolgreich, weiterleiten zur Posts-Seite
+            window.location.href = "/posts.html";
+          } else {
+            // Login fehlgeschlagen, zeige Fehlermeldung
+            const resultText = document.getElementById("result");
+            resultText.innerText = result.error || "Unbekannter Fehler";
+          }
+        });
+      });
+    </script>
   </body>
 </html>

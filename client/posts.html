@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Example</title>
+</head>
+<body>
+  <div id="posts-container"></div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const postsContainer = document.getElementById("posts-container");
+
+      const fetchPosts = async () => {
+        try {
+          const response = await fetch("/api/posts");
+          const data = await response.json();
+
+          // Hier könntest du die Daten im Frontend weiterverarbeiten
+          displayPosts(data);
+        } catch (error) {
+          console.error("Fehler beim Abrufen der Beiträge:", error);
+        }
+      };
+
+      const displayPosts = (posts) => {
+        // Annahme: Die Daten sind ein Array von Beiträgen
+        posts.forEach(post => {
+          const postElement = document.createElement("div");
+          postElement.innerHTML = `
+            <h2>${post.title}</h2>
+            <p>${post.content}</p>
+            <hr>
+          `;
+          postsContainer.appendChild(postElement);
+        });
+      };
+
+      // Beiträge abrufen und darstellen
+      fetchPosts();
+    });
+  </script>
+</body>
+</html>
