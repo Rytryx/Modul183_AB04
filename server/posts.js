@@ -1,24 +1,36 @@
-const posts = [
+const jwt = require('jsonwebtoken');
+
+const secretKey = 'dein_geheimes_geheimnis'; // Ersetze dies durch ein sicheres Geheimnis
+
+const authenticateJWT = (req, res, next) => {
+  const token = req.header("Authorization");
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  jwt.verify(token.replace("Bearer ", ""), secretKey, (err, user) => {
+    if (err) {
+      console.error(err);
+      return res.sendStatus(403);
+    }
+
+    req.user = user;
+    next();
+  });
+};
+
+const getPosts = (req, res) => {
+  // Hier kannst du die geschützten Daten liefern
+  const posts = [
     {
       id: 1,
-      title: "Introduction to JavaScript",
-      content: "JavaScript is a dynamic language primarily used for web development...",
+      title: "Geschützter Beitrag",
+      content: "Dieser Beitrag ist nur für authentifizierte Benutzer sichtbar.",
     },
-    {
-      id: 2,
-      title: "Functional Programming",
-      content: "Functional programming is a paradigm where functions take center stage...",
-    },
-    {
-      id: 3,
-      title: "Asynchronous Programming in JS",
-      content: "Asynchronous programming allows operations to run in parallel without blocking the main thread...",
-    }
   ];
-  
-  const getPosts = (req, res) => {
-    res.json(posts);
-  };
-  
-  module.exports = { getPosts };
-  
+
+  res.json(posts);
+};
+
+module.exports = { authenticateJWT, getPosts };
